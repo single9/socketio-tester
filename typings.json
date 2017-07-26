@@ -1,0 +1,16 @@
+{
+  "name": "socketio-tester",
+  "dependencies": {
+    "ejs": "registry:dt/ejs#2.3.3+20161128184045",
+    "express": "registry:dt/express#4.0.0+20170118060322",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20170324160323",
+    "mime": "registry:dt/mime#0.0.0+20160428043022",
+    "serve-static": "registry:dt/serve-static#1.7.1+20161128184045"
+  },
+  "globalDependencies": {
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160726072212",
+    "node": "registry:dt/node#7.0.0+20170322231424",
+    "socket.io": "registry:dt/socket.io#1.4.4+20170313110830",
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20161116080703"
+  }
+}

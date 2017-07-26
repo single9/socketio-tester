@@ -1,0 +1,34 @@
+{
+  "name": "socketio-tester",
+  "version": "0.0.1",
+  "description": "",
+  "main": "built/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm-run-all --parallel watch:*",
+    "watch:src": "tsc --watch",
+    "watch:server": "supervisor built/index.js",
+    "watch:views": "webpack --watch",
+    "build": "npm-run-all --parallel build:* && cp ./package.json ./built/package.json",
+    "build:views": "webpack -p",
+    "build:server": "tsc"
+  },
+  "keywords": [
+    "socket.io",
+    "test"
+  ],
+  "author": "Duye Chen",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "gt-pack": "^1.1.1",
+    "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3",
+    "webpack": "^2.7.0"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.0.2",
+    "vue": "^2.4.2"
+  }
+}
