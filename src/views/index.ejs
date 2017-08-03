@@ -7,8 +7,47 @@
     <link rel="stylesheet" type="text/css" href="/public/css/index.css">
   </head>
   <body>
-    <h2><%= hello %></h2>
-    <p><%= version %></p>
+    <div id="main" class="uk-offcanvas-content">
+
+      <div class="sticky-bar uk-sticky uk-sticky-fixed uk-sticky-below uk-active" style="z-index: 980;">
+
+          <div class="uk-container uk-container-expand">
+            <nav class="uk-navbar" uk-navbar>
+              
+              <div class="uk-navbar-right">
+                <div class="uk-navbar-item">
+                  <form action="javascript:void(0)" class="uk-grid-small" uk-grid>
+                    <div class="uk-width-1-1@s">
+                      <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: link"></span>
+                        <input class="uk-input uk-form-width-large" type="text" placeholder="Socket.io Server URL" v-model="url">
+                        <button name="open" class="uk-button uk-button-secondary" type="button" @click="isOpened = !isOpened">Open</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+            </nav>
+          </div>
+          
+      </div>
+
+      <div class="sidebar-left uk-visible@m">
+        <ul class="uk-nav uk-nav-default">
+          <router-link tag="li" to="/overview"><a>Overview</a></router-link>
+          <router-link tag="li" to="/documentation"><a>Documentation</a></router-link>
+          <li class="uk-nav-header">Tester</li>
+          <router-link tag="li" to="/tester/auto"><a>Auto</a></router-link>
+          <router-link tag="li" to="/tester/normal"><a>Normal</a></router-link>
+        </ul>
+      </div>
+
+      <div class="content-right uk-section uk-section-default">
+        <router-view :socket-obj="socket"></router-view>
+      </div>
+
+    </div>
     <script src="/public/js/index.js"></script>
   </body>
 </html>

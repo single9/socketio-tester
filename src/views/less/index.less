@@ -1,7 +1,25 @@
-body {
-  background: #808080;
+@import "../../../node_modules/uikit/src/less/uikit.theme.less";
+@baseBg: rgba(150, 0, 150, 0.5);
 
-  .a {
-    color: #000;
-  }
+.sticky-bar {
+    background: @baseBg;
+    background: linear-gradient(to top left, @baseBg, @baseBg*2);
+    margin-bottom: 5px;
+}
+
+.sidebar-left {
+    position: fixed;
+    top: 80px;
+    bottom: 0;
+    box-sizing: border-box;
+    width: 240px !important;
+    padding: 40px 40px 60px 40px;
+}
+
+.content-right {
+    padding-left: 240px;
+
+    @media (max-width: 959px) {
+        padding-left: 0;
+    }
 }

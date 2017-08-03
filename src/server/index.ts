@@ -24,7 +24,12 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  socket.emit('greet', 'Hello!');
+
+  socket.emit('greet', 'Hello! ' + socket.id);
+
+  socket.on('test', (d: any) => {
+    socket.emit('test', d || 'Hello! (from server)');
+  });
 });
 
 server.listen(3000);
