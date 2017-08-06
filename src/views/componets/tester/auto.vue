@@ -23,8 +23,8 @@
             </div>
 
             <div class="uk-margin">
-              <button class="uk-button uk-button-primary" type="button" @click="add">Add</button>
-              <button class="uk-button uk-button-primary uk-hidden" type="button" @click="edited">Edit</button>
+              <button id="add" class="uk-button uk-button-primary" type="button" @click="add">Add</button>
+              <button id="edit" class="uk-button uk-button-secondary uk-hidden" type="button" @click="edited">Edited</button>
               <button class="uk-button uk-button-default" type="reset" @click="reset">Reset</button>
             </div>
 
@@ -51,7 +51,6 @@
                 </div>
                 <div class="uk-card-footer">
                   <button class="btn-scroll uk-button uk-button-text" @click="edit(key)">Edit</button> / 
-                  <button class="btn-scroll uk-button uk-button-text" @click="copy(key)">Copy</button> / 
                   <button class="btn-scroll uk-button uk-button-text" @click="remove(key)">Remove</button>
                 </div>
                 
@@ -84,7 +83,8 @@ export default {
       uiDragCreated: false,
       steps: null,
       stepsQueue: [],
-      socketEvent: new event_struct()
+      socketEvent: new event_struct(),
+      editMode: null
     }
   },
 
@@ -126,11 +126,24 @@ export default {
       } else {
         clearBtn.removeAttribute('disabled');
       }
+    },
+
+    editMode() {
+      let editBtn = document.querySelector('#edit');
+      let addBtn = document.querySelector('#add');
+      
+      if (this.editMode !== null) {
+        editBtn.classList.remove('uk-hidden');
+        addBtn.classList.add('uk-hidden');
+      } else {
+        editBtn.classList.add('uk-hidden');
+        addBtn.classList.remove('uk-hidden');
+      }
     }
   },
 
   methods: {
-    add () {
+    add (index=undefined) {
       let check = true;
 
       for (let sev in this.socketEvent) {
@@ -148,17 +161,18 @@ export default {
         this.steps = [];
       }
 
-      this.steps.push(this.socketEvent);
+      if (index !== undefined) {
+        this.steps[index] = this.socketEvent;
+      } else {
+        this.steps.push(this.socketEvent);
+      }
+
       this.socketEvent = new event_struct();
 
     },
 
     reset () {
       this.socketEvent = new event_struct();
-    },
-
-    edited () {
-
     },
 
     doProcess () {
@@ -185,10 +199,25 @@ export default {
     },
 
     edit (index) {
-      this.socketEvent = this.steps[index];
+      this.editMode = index;
+      let step = this.steps[index];
+      this.socketEvent = new event_struct(step.name, 
+                                          step.content,
+                                          step.listener,
+                                          step.delay);
       $('html, body').animate({
           scrollTop: $("#auto-tester").offset().top - 80
       }, 500);
+    },
+
+    edited () {
+      this.add(this.editMode);
+
+      $('html, body').animate({
+          scrollTop: $("#" + this.editMode).offset().top - 80
+      }, 500);
+
+      this.editMode = null;
     },
 
     remove (index) {
