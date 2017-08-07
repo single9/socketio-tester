@@ -38,8 +38,8 @@
           <button name="send" class="uk-button uk-button-secondary" type="button" @click="doProcess" disabled>Go</button>
         </div>
         <ul id="steps" class="uk-grid-small uk-child-width-1-3" uk-grid>
-            <li v-for="(value, key, index) in steps" :id="key">
-              <div class="uk-card uk-card-default uk-card-hover">
+            <li v-for="(value, key, index) in steps">
+              <div class="uk-card uk-card-default uk-card-hover" :id="key">
                 <div class="uk-card-header">
                   <div class="uk-card-badge uk-label">{{key}}</div>
                   <h3 class="uk-card-title uk-margin-remove-bottom">{{value.name}}</h3>
@@ -49,6 +49,7 @@
                 <div class="uk-card-body">
                   <p>{{value.content}}</p>
                 </div>
+                
                 <div class="uk-card-footer">
                   <button class="btn-scroll uk-button uk-button-text" @click="edit(key)">Edit</button> / 
                   <button class="btn-scroll uk-button uk-button-text" @click="remove(key)">Remove</button>
@@ -67,7 +68,8 @@ import bus from '../../commons/bus.js';
 import UIkit from 'uikit';
 import $ from 'jquery';
 
-function event_struct (name=null, content=null, listener=null, delay) {
+function event_struct (id, name=null, content=null, listener=null, delay) {
+  this.id = id;
   this.name = name;
   this.content = content;
   this.listener = listener;
@@ -83,8 +85,8 @@ export default {
       uiDragCreated: false,
       steps: null,
       stepsQueue: [],
-      socketEvent: new event_struct(),
-      editMode: null
+      socketEvent: new event_struct(0),
+      editIndex: null
     }
   },
 
@@ -93,8 +95,8 @@ export default {
 
     // Tester
     this.steps = [];
-    for (let i=0; i<25; i++) {
-      let ev = new event_struct('test', Math.random() * 1000, 'test', Math.floor(Math.random() * 3000));
+    for (let i=0; i<55; i++) {
+      let ev = new event_struct(i, 'test', Math.random() * 1000, 'test', Math.floor(Math.random() * 3000));
       this.steps.push(ev);
     }
   },
@@ -121,6 +123,7 @@ export default {
 
     stepsQueue () {
       let clearBtn = document.getElementById('clear');
+
       if(this.steps.length <= 0) {
         clearBtn.setAttribute('disabled', true);
       } else {
@@ -128,11 +131,11 @@ export default {
       }
     },
 
-    editMode() {
+    editIndex() {
       let editBtn = document.querySelector('#edit');
       let addBtn = document.querySelector('#add');
       
-      if (this.editMode !== null) {
+      if (this.editIndex !== null) {
         editBtn.classList.remove('uk-hidden');
         addBtn.classList.add('uk-hidden');
       } else {
@@ -164,15 +167,18 @@ export default {
       if (index !== undefined) {
         this.steps[index] = this.socketEvent;
       } else {
+        this.socketEvent.id = this.steps.length;
         this.steps.push(this.socketEvent);
       }
 
-      this.socketEvent = new event_struct();
+      this.socketEvent = new event_struct(this.steps.length);
 
     },
 
     reset () {
-      this.socketEvent = new event_struct();
+      if (this.steps !== undefined) {
+        this.socketEvent = new event_struct(this.steps.length);
+      }
     },
 
     doProcess () {
@@ -187,11 +193,19 @@ export default {
     },
 
     doEvent (ev) {
+      let currElement = document.getElementById(ev.id);
+      currElement.classList.add('uk-card-secondary');
+
+      $('html, body').animate({
+          scrollTop: $("#" + ev.id).offset().top - 80
+      }, 500);
+
       this.socketObj.emit(ev.name, ev.content);
       this.socketObj.once(ev.listener, (d) => {
         console.log(d);
         if (this.stepsQueue.length > 0) {
           setTimeout(()=>{
+            currElement.classList.remove('uk-card-secondary');
             this.doProcess();
           }, ev.delay);
         }
@@ -199,9 +213,10 @@ export default {
     },
 
     edit (index) {
-      this.editMode = index;
+      this.editIndex = index;
       let step = this.steps[index];
-      this.socketEvent = new event_struct(step.name, 
+      this.socketEvent = new event_struct(step.id,
+                                          step.name,
                                           step.content,
                                           step.listener,
                                           step.delay);
@@ -211,13 +226,20 @@ export default {
     },
 
     edited () {
-      this.add(this.editMode);
+      this.add(this.editIndex);
 
       $('html, body').animate({
-          scrollTop: $("#" + this.editMode).offset().top - 80
+          scrollTop: $("#" + this.editIndex).offset().top - 80
       }, 500);
 
-      this.editMode = null;
+      let elClass = document.getElementById(this.editIndex).classList;
+      elClass.add('uk-card-primary');
+
+      setTimeout(() => {
+        elClass.remove('uk-card-primary');
+      }, 2000);
+
+      this.editIndex = null;
     },
 
     remove (index) {
@@ -237,7 +259,7 @@ export default {
       this.stepsQueue = [];
 
       for (let i=0; i<newSteps.length; i++) {
-        let id = newSteps[i].id;
+        let id = newSteps[i].firstChild.id;
         this.stepsQueue.push(this.steps[id]);
       }
     },
