@@ -66,12 +66,12 @@ export default {
           let msgBox = document.getElementById('msgBox');
           
           try {
-            data = JSON.parse(d);
+            data = (typeof(d) === 'object') ? d : JSON.parse(d);
             let formatter = new JSONFormatter(data);
             msgBox.innerHTML = '';
             msgBox.appendChild(formatter.render());
           } catch (e) {
-            bus.$emit('error', 'JSON Parse Error.')
+            bus.$emit('error', e)
           }
 
         });
