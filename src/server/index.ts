@@ -3,14 +3,14 @@ import http = require('http');
 import express = require('express');
 import pack = require('../package.json');
 
+const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-const rootPath = __dirname;
 
 app.set('view engine', 'ejs');
-app.set('views', rootPath + '/views');
-app.use('/public/', express.static(__dirname + '/assets'));
+app.set('views',  path.join(__dirname, 'views'));
+app.use('/public/', express.static(path.join(__dirname, 'views', 'assets')));
 
 app.use((req, res, next) => {
   res.locals.version = (<any>pack).version;

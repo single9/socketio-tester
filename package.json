@@ -3,15 +3,17 @@
   "version": "0.0.1",
   "description": "",
   "main": "built/index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm-run-all --parallel watch:*",
     "watch:src": "tsc --watch",
     "watch:server": "supervisor built/index.js",
     "watch:views": "webpack --watch --progress",
-    "build": "npm-run-all --parallel build:* && cp ./package.json ./built/package.json",
+    "build": "rm -rf ./built && npm-run-all build:*",
+    "build:server": "tsc",
     "build:views": "webpack -p --progress",
-    "build:server": "tsc"
+    "build:binary": "cp ./package.json ./built/package.json && pkg ./built/package.json --out-path ./built/bin/"
   },
   "keywords": [
     "socket.io",
@@ -25,9 +27,7 @@
     "jquery": "^3.2.1",
     "json-formatter-js": "^2.2.0",
     "socket.io": "^2.0.3",
-    "socket.io-client": "^2.0.3",
-    "uglify-es": "git://github.com/mishoo/UglifyJS2.git#harmony",
-    "uikit": "^3.0.0-beta.27"
+    "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
     "gt-pack": ">=1.1.4",
@@ -37,6 +37,11 @@
     "vue-loader": "^13.0.2",
     "vue-router": "^2.7.0",
     "vue-template-compiler": "^2.4.2",
+    "uikit": "^3.0.0-beta.27",
     "webpack": "^2.7.0"
+  },
+  "pkg": {
+    "scripts": "./**/*.js",
+    "assets": "./views/**/*"
   }
 }
