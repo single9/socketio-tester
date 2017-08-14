@@ -30,14 +30,14 @@
     "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
-    "gt-pack": ">=1.1.4",
+    "gt-pack": "git+ssh://git@bitbucket.org/single9_zerolab/gt-pack.git",
     "npm-run-all": "^4.0.2",
+    "uikit": "^3.0.0-beta.27",
     "vue": "^2.4.2",
     "vue-hot-reload-api": "^2.1.0",
     "vue-loader": "^13.0.2",
     "vue-router": "^2.7.0",
     "vue-template-compiler": "^2.4.2",
-    "uikit": "^3.0.0-beta.27",
     "webpack": "^2.7.0"
   },
   "pkg": {
